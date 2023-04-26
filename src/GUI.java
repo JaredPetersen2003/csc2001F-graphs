@@ -7,10 +7,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 public class GUI {
     
     static JFrame frame;
+    JMenuBar menuBar;
+    JTextArea textArea;
+
+    JButton singleTest;
+    JButton multiTest;
     
     public GUI(){
         frame = new JFrame("Graphs");
@@ -18,7 +24,7 @@ public class GUI {
         frame.setSize(600, 600);
         
         //JMenu set up
-        JMenuBar menuBar = new JMenuBar();
+        menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
         JMenuItem loadUsers = new JMenuItem("Load Dataset");
@@ -27,21 +33,7 @@ public class GUI {
         loadUsers.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                try {
-                    JFileChooser fileChooser = new JFileChooser();
-                    int returnValue = fileChooser.showOpenDialog(null);
-
-                    if (returnValue == JFileChooser.APPROVE_OPTION) {
-                        loadDataSet(fileChooser.getSelectedFile());
-                        JOptionPane.showMessageDialog(frame, "File loaded successfully");
-                    }
-                    else
-                        JOptionPane.showMessageDialog(frame, "Cancelled");
-
-                    
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                loadDataSet();
             }
         });
         fileMenu.add(loadUsers);
@@ -49,7 +41,7 @@ public class GUI {
         frame.add(BorderLayout.NORTH, menuBar);
 
         // Text Area
-        JTextArea textArea = new JTextArea();
+        textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -58,8 +50,8 @@ public class GUI {
 
         // Button panel
         JPanel panel = new JPanel();
-        JButton singleTest = new JButton("Single Test");
-        JButton multiTest = new JButton("Multiple Tests");
+        singleTest = new JButton("Single Test");
+        multiTest = new JButton("Multiple Tests");
       
 
     
@@ -74,21 +66,44 @@ public class GUI {
     }
  
 
-    private static void loadDataSet(File file) throws IOException{
-        // Load
-        try{
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            
-            while ((line = br.readLine()) != null){
+    private static void loadDataSet(){
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showOpenDialog(null);
 
-               //TODO: load dataset
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
+                String line;
+                
+                while ((line = br.readLine()) != null){
+    
+                   //TODO: load dataset
+                }
+                br.close();
+                JOptionPane.showMessageDialog(frame, "File loaded successfully");
             }
-            br.close();
+            else
+                JOptionPane.showMessageDialog(frame, "Cancelled");
+
+            
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
-        catch(FileNotFoundException e){
-            System.out.println("Error: Dataset not found");
-        }
+
+    }
+
+    public static void main(String[] args) {
+        generateDataSet();
+    }
+
+    private static void generateDataSet(){
+        final int MIN = 5;
+        final int MAX = 10;
+
+        int numVertexes = (int) ((Math.random() * (MAX - MIN)) + MIN);
+        int numEdges;
+     
+        System.out.println(numVertexes);
 
     }
 
