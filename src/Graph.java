@@ -326,7 +326,8 @@ public class Graph
     {
         Graph g = new Graph( );
         try
-        {   	
+        {   
+            GUI gui = new GUI();	
             FileReader fin = new FileReader(args[0]);
             Scanner graphFile = new Scanner( fin );
 
