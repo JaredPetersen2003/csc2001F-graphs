@@ -8,6 +8,7 @@ public class GraphGenerator {
     final int MAX = 20;
     Graph graph;
     ArrayList<String> edges;
+    File output;
  
     // Creating the constructor
     public GraphGenerator(int numVertices)
@@ -82,8 +83,8 @@ public class GraphGenerator {
 
     void writeFile(){
         try {
-            File file = new File("data/data.txt");
-            FileWriter fileWriter = new FileWriter(file);
+            output = new File("data/data.txt");
+            FileWriter fileWriter = new FileWriter(output);
             for (String edge : edges) {
                 fileWriter.write(edge + "\n");                
             }

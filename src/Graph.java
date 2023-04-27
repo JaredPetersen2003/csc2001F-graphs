@@ -38,6 +38,8 @@ public class Graph
 {
     public static final double INFINITY = Double.MAX_VALUE;
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
+    private int nodesSeen;
+    private int edgesSeen;
 
     /**
      * Add a new edge to the graph.
@@ -155,7 +157,8 @@ public class Graph
         clearAll( );
         pq.add( new Path( start, 0 ) ); start.dist = 0;
         
-        int nodesSeen = 0;
+        nodesSeen = 0;
+        edgesSeen = 0;
         while( !pq.isEmpty( ) && nodesSeen < vertexMap.size( ) )
         {
             Path vrec = pq.remove( );
@@ -179,6 +182,7 @@ public class Graph
                     w.dist = v.dist +cvw;
                     w.prev = v;
                     pq.add( new Path( w, w.dist ) );
+                    edgesSeen++;
                 }
             }
         }
@@ -311,6 +315,26 @@ public class Graph
         catch( GraphException e )
           { System.err.println( e ); }
         return true;
+    }
+
+    
+    /**
+     * The getEdgesSeen function returns the number of edges seen by the algorithm.
+
+     * @return int The number of edges seen
+     */
+    public int getEdgesSeen() {
+        return edgesSeen;
+    }
+
+    
+    /**
+     * The getNodesSeen function returns the number of nodes seen by the search algorithm.
+     *
+     * @return int The number of nodes seen
+     */
+    public int getNodesSeen() {
+        return nodesSeen;
     }
 
     /**

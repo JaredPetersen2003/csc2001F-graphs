@@ -50,8 +50,12 @@ public class GUI {
         JPanel panel = new JPanel();
         singleTest = new JButton("Single Test");
         multiTest = new JButton("Multiple Tests");
-      
-
+        
+        singleTest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                singleTestOnClick();}
+        });
     
         // Add buttons
         panel.add(singleTest);
@@ -61,6 +65,27 @@ public class GUI {
 
         frame.setVisible(true);   
 
+    }
+
+    void singleTestOnClick(){
+        
+        GraphGenerator g = new GraphGenerator(10);
+        
+        BufferedReader br1;
+        String startNode = "";
+        try {
+            br1 = new BufferedReader(new FileReader(g.output));
+            startNode = br1.readLine().split(" ")[0];
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        g.graph.dijkstra(startNode);
+
+        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getEdgesSeen());
     }
  
 
@@ -91,7 +116,7 @@ public class GUI {
     }
 
     public static void main(String[] args) {
-        //GraphGenerator g = new GraphGenerator(5);
+        GUI gui = new GUI();
     }
 
     
