@@ -73,7 +73,7 @@ public class Graph
      * If vertexName is not present, add it to vertexMap.
      * In either case, return the Vertex.
      */
-    private Vertex getVertex( String vertexName )
+    public Vertex getVertex( String vertexName )
     {
         Vertex v = vertexMap.get( vertexName );
         if( v == null )

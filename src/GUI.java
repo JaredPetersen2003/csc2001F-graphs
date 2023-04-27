@@ -2,12 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
+import java.io.*;
+import java.text.Format;
 
 public class GUI {
     
@@ -93,19 +91,10 @@ public class GUI {
     }
 
     public static void main(String[] args) {
-        generateDataSet();
+        //GraphGenerator g = new GraphGenerator(5);
     }
 
-    private static void generateDataSet(){
-        final int MIN = 5;
-        final int MAX = 10;
-
-        int numVertexes = (int) ((Math.random() * (MAX - MIN)) + MIN);
-        int numEdges;
-     
-        System.out.println(numVertexes);
-
-    }
+    
 
     
 }
