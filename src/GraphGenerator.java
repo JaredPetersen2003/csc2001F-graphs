@@ -68,6 +68,20 @@ public class GraphGenerator {
         return numOfVertices * ((numOfVertices - 1) / 2);
     }
 
+    
+    /**
+     * The checkValidEdge function checks to see if the edge between two vertices is valid.
+     * It does this by checking to see if the two vertices are equal, and then it checks
+     * through all of a's adjacent edges to make sure that b isn't already connected. If 
+     * either of these conditions are true, then we return false because there is no need 
+     * for an edge between them. Otherwise, we return true because there should be an edge 
+     * connecting them in our graph. This function will be used when adding edges from our file input.
+     *
+     * @param Vertex a Check if the vertex is already in the graph
+     * @param Vertex b Check if the edge is already in the graph
+     *
+     * @return True if the edge is valid, and false otherwise
+     */
     Boolean checkValidEdge(Vertex a, Vertex b){
         if (a.name == b.name)
             return false;
@@ -81,6 +95,11 @@ public class GraphGenerator {
 
     }
 
+    
+    /**
+     * The writeFile function takes the edges array and writes it to a file.
+     * 
+     */
     void writeFile(){
         try {
             output = new File("data/data.txt");

@@ -7,13 +7,14 @@ JC = javac
 
 
 $(BINDIR)/%.class : $(SRCDIR)/%.java
-Makefile	$(JC) -d $(BINDIR)/ $(SRCDIR)/*.java
+	$(JC) -d $(BINDIR)/ $(SRCDIR)/*.java
 
 CLASSES = \
 	$(BINDIR)/GraphException.class \
 	$(BINDIR)/Path.class \
 	$(BINDIR)/Edge.class \
 	$(BINDIR)/Vertex.class \
+	$(BINDIR)/GUI.class \
 	$(BINDIR)/Graph.class
 
 default: $(CLASSES)
