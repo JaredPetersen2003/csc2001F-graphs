@@ -67,6 +67,15 @@ public class GUI {
 
     }
 
+    
+    /**
+     * The singleTestOnClick function is a function that runs the Dijkstra's algorithm on a randomly generated graph.
+     * It then prints out the number of nodes and edges seen by the algorithm to the textArea in our GUI.
+     
+     *
+     *
+     * @return The number of nodes and edges seen
+     */
     void singleTestOnClick(){
         
         GraphGenerator g = new GraphGenerator(10);
