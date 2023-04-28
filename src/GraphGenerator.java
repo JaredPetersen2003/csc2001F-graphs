@@ -2,6 +2,7 @@
 // Random Edge Generation in Java
 import java.util.*;
 import java.io.*;
+import com.opencsv.*;
 
 public class GraphGenerator {
     final int MIN = 5;
@@ -9,19 +10,24 @@ public class GraphGenerator {
     Graph graph;
     ArrayList<String> edges;
     File output;
+    private int numEdges;
+    private int numVertices;
  
     // Creating the constructor
-    public GraphGenerator(int numVertices)
+    public GraphGenerator(int numVertices, int numEdges)
     {
+        this.numVertices = numVertices;
         graph = new Graph();
         edges = new ArrayList<>();
         Random random = new Random();
-       
+        File output = null;       
 
         // Generate random number of nodes
-        int numEdges = random.nextInt(computeMaxEdges(numVertices)) + 1;
+        if (numEdges == -1)
+            this.numEdges = random.nextInt(computeMaxEdges(numVertices)) + 1;
+        else 
+            this.numEdges = numEdges;
 
-        
 
         // List of nodes
         ArrayList<Vertex> nodeList = new ArrayList<>(numVertices);
@@ -34,7 +40,7 @@ public class GraphGenerator {
 
         int edgesGenerated = 0;
         //Generate random edges
-        while ((edgesGenerated < numEdges) & (edgesGenerated < numVertices)) {
+        while ((edgesGenerated < this.numEdges) & (edgesGenerated < numVertices)) {
             // Select two random vertices
             Vertex vertexA = graph.getVertex(nodeList.get(random.nextInt(numVertices)).name);
             Vertex vertexB = graph.getVertex(nodeList.get(random.nextInt(numVertices)).name);
@@ -51,7 +57,7 @@ public class GraphGenerator {
                 edgesGenerated++;
             }
         }
-        writeFile();       
+            
     
 }
 
@@ -60,7 +66,7 @@ public class GraphGenerator {
   
     // Method to compute the maximum number of possible
     // edges for a given number of vertices
-    int computeMaxEdges(int numOfVertices)
+    static int computeMaxEdges(int numOfVertices)
     {
         // As it is an undirected graph
         // So, for a given number of vertices V
@@ -100,9 +106,9 @@ public class GraphGenerator {
      * The writeFile function takes the edges array and writes it to a file.
      * 
      */
-    void writeFile(){
+    void writeFile(String ID){
         try {
-            output = new File("data/data.txt");
+            output = new File("data/data" + ID + ".txt");
             FileWriter fileWriter = new FileWriter(output);
             for (String edge : edges) {
                 fileWriter.write(edge + "\n");                
@@ -110,8 +116,15 @@ public class GraphGenerator {
             fileWriter.close();
         } catch (Exception e) {
             // TODO: handle exception
-        }
-       
+        }       
+    }
+
+    public int getNumEdges() {
+        return numEdges;
+    }
+
+    public int getNumVertices() {
+        return numVertices;
     }
 }
    

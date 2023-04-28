@@ -1,11 +1,13 @@
 import javax.swing.*;
+
+import com.opencsv.CSVWriter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.List;
 import java.io.*;
-import java.text.Format;
+import java.util.Random;
+
 
 public class GUI {
     
@@ -25,16 +27,7 @@ public class GUI {
         menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
-        JMenuItem loadUsers = new JMenuItem("Load Dataset");
 
-        // Manually load a file
-        loadUsers.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                loadDataSet();
-            }
-        });
-        fileMenu.add(loadUsers);
 
         frame.add(BorderLayout.NORTH, menuBar);
 
@@ -55,6 +48,18 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e){
                 singleTestOnClick();}
+        });
+
+        multiTest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                try {
+                    multiTestOnClick();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
         });
     
         // Add buttons
@@ -77,8 +82,7 @@ public class GUI {
      * @return The number of nodes and edges seen
      */
     void singleTestOnClick(){
-        
-        GraphGenerator g = new GraphGenerator(10);
+        GraphGenerator g = new GraphGenerator(10, -1);
         
         BufferedReader br1;
         String startNode = "";
@@ -94,36 +98,50 @@ public class GUI {
         }
         g.graph.dijkstra(startNode);
 
-        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getEdgesSeen());
+        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE());
+    }
+
+    void multiTestOnClick() throws IOException{
+        int numTests = Integer.parseInt(JOptionPane.showInputDialog(frame, "How many tests to run?","Number of tests", JOptionPane.INFORMATION_MESSAGE));
+
+        CSVWriter writer = new CSVWriter(new FileWriter("data/output.csv"));
+        String[] head = {"V", "E", "Vcount", "Ecount", "PQCount"};
+        writer.writeNext(head);
+        
+        for (int i = 0; i < numTests; i++) {
+            
+            
+        GraphGenerator g = new GraphGenerator((i+ 1) * 10, (i+ 1) * 10);
+        g.writeFile(String.valueOf(i));
+        
+        BufferedReader br1;
+        String startNode = "";
+        try {
+            br1 = new BufferedReader(new FileReader(g.output));
+            startNode = br1.readLine().split(" ")[0];
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        g.graph.dijkstra(startNode);
+
+        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ()+ "\n");
+        String[] testResult = {String.valueOf(g.getNumVertices()), String.valueOf(g.getNumEdges()), String.valueOf( g.graph.getNodesSeen()), 
+            String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ())};
+            System.out.println(testResult[1]);
+        //Writing data to the csv file
+        writer.writeNext(testResult);
+   
+    
+    
+        }
+        //Flushing data from writer to file
+        writer.flush();
     }
  
-
-    private static void loadDataSet(){
-        try {
-            JFileChooser fileChooser = new JFileChooser();
-            int returnValue = fileChooser.showOpenDialog(null);
-
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
-                String line;
-                
-                while ((line = br.readLine()) != null){
-    
-                   //TODO: load dataset
-                }
-                br.close();
-                JOptionPane.showMessageDialog(frame, "File loaded successfully");
-            }
-            else
-                JOptionPane.showMessageDialog(frame, "Cancelled");
-
-            
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-    }
-
     public static void main(String[] args) {
         GUI gui = new GUI();
     }

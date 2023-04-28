@@ -38,8 +38,9 @@ public class Graph
 {
     public static final double INFINITY = Double.MAX_VALUE;
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
-    private int nodesSeen;
-    private int edgesSeen;
+    private int opcountV;
+    private int opcountE;
+    private int opcountPQ;
 
     /**
      * Add a new edge to the graph.
@@ -111,36 +112,6 @@ public class Graph
             v.reset( );
     }
 
-    /**
-     * Single-source unweighted shortest-path algorithm.
-     */
-    public void unweighted( String startName )
-    {
-        clearAll( ); 
-
-        Vertex start = vertexMap.get( startName );
-        if( start == null )
-            throw new NoSuchElementException( "Start vertex not found" );
-
-        Queue<Vertex> q = new LinkedList<Vertex>( );
-        q.add( start ); start.dist = 0;
-
-        while( !q.isEmpty( ) )
-        {
-            Vertex v = q.remove( );
-
-            for( Edge e : v.adj )
-            {
-                Vertex w = e.dest;
-                if( w.dist == INFINITY )
-                {
-                    w.dist = v.dist + 1;
-                    w.prev = v;
-                    q.add( w );
-                }
-            }
-        }
-    }
 
     /**
      * Single-source weighted shortest-path algorithm. (Dijkstra) 
@@ -157,15 +128,19 @@ public class Graph
         clearAll( );
         pq.add( new Path( start, 0 ) ); start.dist = 0;
         
-        nodesSeen = 0;
-        edgesSeen = 0;
+        int nodesSeen = 0;
+        opcountV = 0;
+        opcountE = 0;
         while( !pq.isEmpty( ) && nodesSeen < vertexMap.size( ) )
         {
+            opcountPQ += (int)(Math.log(pq.size()) / Math.log(2));
             Path vrec = pq.remove( );
             Vertex v = vrec.dest;
             if( v.scratch != 0 )  // already processed v
                 continue;
                 
+            opcountV++;
+
             v.scratch = 1;
             nodesSeen++;
 
@@ -182,102 +157,11 @@ public class Graph
                     w.dist = v.dist +cvw;
                     w.prev = v;
                     pq.add( new Path( w, w.dist ) );
-                    edgesSeen++;
+                    opcountPQ += (int)(Math.log(pq.size()) / Math.log(2));
+                    opcountE++;
                 }
             }
         }
-    }
-
-    /**
-     * Single-source negative-weighted shortest-path algorithm.
-     * Bellman-Ford Algorithm
-     */
-    public void negative( String startName )
-    {
-        clearAll( ); 
-
-        Vertex start = vertexMap.get( startName );
-        if( start == null )
-            throw new NoSuchElementException( "Start vertex not found" );
-
-        Queue<Vertex> q = new LinkedList<Vertex>( );
-        q.add( start ); start.dist = 0; start.scratch++;
-
-        while( !q.isEmpty( ) )
-        {
-            Vertex v = q.remove( );
-            if( v.scratch++ > 2 * vertexMap.size( ) )
-                throw new GraphException( "Negative cycle detected" );
-
-            for( Edge e : v.adj )
-            {
-                Vertex w = e.dest;
-                double cvw = e.cost;
-                
-                if( w.dist > v.dist + cvw )
-                {
-                    w.dist = v.dist + cvw;
-                    w.prev = v;
-                      // Enqueue only if not already on the queue
-                    if( w.scratch++ % 2 == 0 )
-                        q.add( w );
-                    else
-                        w.scratch--;  // undo the enqueue increment    
-                }
-            }
-        }
-    }
-
-    /**
-     * Single-source negative-weighted acyclic-graph shortest-path algorithm.
-     */
-    public void acyclic( String startName )
-    {
-        Vertex start = vertexMap.get( startName );
-        if( start == null )
-            throw new NoSuchElementException( "Start vertex not found" );
-
-        clearAll( ); 
-        Queue<Vertex> q = new LinkedList<Vertex>( );
-        start.dist = 0;
-        
-          // Compute the indegrees
-		Collection<Vertex> vertexSet = vertexMap.values( );
-        for( Vertex v : vertexSet )
-            for( Edge e : v.adj )
-                e.dest.scratch++;
-            
-          // Enqueue vertices of indegree zero
-        for( Vertex v : vertexSet )
-            if( v.scratch == 0 )
-                q.add( v );
-       
-        int iterations;
-        for( iterations = 0; !q.isEmpty( ); iterations++ )
-        {
-            Vertex v = q.remove( );
-
-            for( Edge e : v.adj )
-            {
-                Vertex w = e.dest;
-                double cvw = e.cost;
-                
-                if( --w.scratch == 0 )
-                    q.add( w );
-                
-                if( v.dist == INFINITY )
-                    continue;    
-                
-                if( w.dist > v.dist + cvw )
-                {
-                    w.dist = v.dist + cvw;
-                    w.prev = v;
-                }
-            }
-        }
-        
-        if( iterations != vertexMap.size( ) )
-            throw new GraphException( "Graph has a cycle!" );
     }
 
     /**
@@ -296,17 +180,13 @@ public class Graph
             System.out.print( "Enter algorithm (u, d, n, a ): " );
             String alg = in.nextLine( );
             
-            if( alg.equals( "u" ) )
-                g.unweighted( startName );
-            else if( alg.equals( "d" ) )    
+        
+            if( alg.equals( "d" ) )    
             {
                 g.dijkstra( startName );
                 g.printPath( destName );
             }
-            else if( alg.equals( "n" ) )
-                g.negative( startName );
-            else if( alg.equals( "a" ) )
-                g.acyclic( startName );
+ 
                     
             g.printPath( destName );
         }
@@ -319,12 +199,12 @@ public class Graph
 
     
     /**
-     * The getEdgesSeen function returns the number of edges seen by the algorithm.
+     * The getopcountE function returns the number of edges seen by the algorithm.
 
      * @return int The number of edges seen
      */
-    public int getEdgesSeen() {
-        return edgesSeen;
+    public int getopcountE() {
+        return opcountE;
     }
 
     
@@ -334,7 +214,11 @@ public class Graph
      * @return int The number of nodes seen
      */
     public int getNodesSeen() {
-        return nodesSeen;
+        return opcountV;
+    }
+
+    public int getOpcountPQ(){
+        return opcountPQ;
     }
 
     /**
