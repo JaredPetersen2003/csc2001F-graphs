@@ -82,11 +82,12 @@ public class GUI {
      * @return The number of nodes and edges seen
      */
     void singleTestOnClick(){
-        GraphGenerator g = new GraphGenerator(10, -1);
-        
+        GraphGenerator g = new GraphGenerator(10, 30);
+        g.writeFile("singleTest");
         BufferedReader br1;
         String startNode = "";
         try {
+
             br1 = new BufferedReader(new FileReader(g.output));
             startNode = br1.readLine().split(" ")[0];
         } catch (FileNotFoundException e) {
@@ -98,7 +99,7 @@ public class GUI {
         }
         g.graph.dijkstra(startNode);
 
-        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE());
+        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\n");
     }
 
     void multiTestOnClick() throws IOException{
@@ -110,31 +111,30 @@ public class GUI {
         
         for (int i = 0; i < numTests; i++) {
             
+            GraphGenerator g = new GraphGenerator((i+ 1) * 10, (i+ 1) * 50);
+            g.writeFile(String.valueOf(i));
             
-        GraphGenerator g = new GraphGenerator((i+ 1) * 10, (i+ 1) * 10);
-        g.writeFile(String.valueOf(i));
-        
-        BufferedReader br1;
-        String startNode = "";
-        try {
-            br1 = new BufferedReader(new FileReader(g.output));
-            startNode = br1.readLine().split(" ")[0];
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        g.graph.dijkstra(startNode);
+            BufferedReader br1;
+            String startNode = "";
+            try {
+                br1 = new BufferedReader(new FileReader(g.output));
+                startNode = br1.readLine().split(" ")[0];
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            g.graph.dijkstra(startNode);
 
-        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ()+ "\n");
-        String[] testResult = {String.valueOf(g.getNumVertices()), String.valueOf(g.getNumEdges()), String.valueOf( g.graph.getNodesSeen()), 
-            String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ())};
-            System.out.println(testResult[1]);
-        //Writing data to the csv file
-        writer.writeNext(testResult);
-   
+            textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ()+ "\n");
+            String[] testResult = {String.valueOf(g.getNumVertices()), String.valueOf(g.getNumEdges()), String.valueOf( g.graph.getNodesSeen()), 
+                String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ())};
+                System.out.println(testResult[1]);
+            //Writing data to the csv file
+            writer.writeNext(testResult);
+    
     
     
         }
