@@ -1,7 +1,8 @@
 JFLAGS = -g
 SRCDIR = src
 BINDIR = bin
-JC = javac
+JC = javac -classpath lib/opencsv-5.7.1.jar
+
 
 .SUFFIXES: .java .class
 
