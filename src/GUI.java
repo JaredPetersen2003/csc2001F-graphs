@@ -10,9 +10,14 @@ public class GUI {
     JTextArea textArea;
     JButton singleTest;
     JButton multiTest;
-    private final int[] numEdges = {20, 35, 50, 65, 80, 95};
-    private final int[] numVertices = {10, 20, 30, 40, 50};
+    private final int[] numVertices = {30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150};
     
+    
+    /**
+     * The GUI function creates a GUI for the user to interact with.
+     * The GUI has two buttons, one for single tests and one for multiple tests.
+     * When the user clicks on either button, it will run the corresponding function
+     */
     public GUI(){
         frame = new JFrame("Graphs");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,12 +62,19 @@ public class GUI {
      * @return The number of nodes and edges seen
      */
     void singleTestOnClick(){
-        GraphGenerator g = new GraphGenerator(10, 30);
+        GraphGenerator g = new GraphGenerator(10, 20);
         g.writeFile("singleTest");
         executeDijkstra(g);
-        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\n");
+        textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ() + "\n");
     }
 
+    
+    /**
+     * The multiTestOnClick function is used to run multiple tests on the Dijkstra's algorithm.
+     * It takes in a number of vertices and edges, and runs the algorithm with those parameters.
+     * The results are then written to a csv file for later analysis.
+     *
+     */
     void multiTestOnClick() throws IOException{
         //int numTests = Integer.parseInt(JOptionPane.showInputDialog(frame, "How many tests to run?","Number of tests", JOptionPane.INFORMATION_MESSAGE));
 
@@ -72,9 +84,11 @@ public class GUI {
 
 
         for (int i = 0; i < numVertices.length; i++) {
-            for (int j = 1; j < 5; j++) {
-                GraphGenerator g = new GraphGenerator(numVertices[i], j * 15);
-                g.writeFile(String.valueOf(i));
+            for (int j = 1; j < 20; j++) {
+                int edges = j * 15;
+                GraphGenerator g = new GraphGenerator(numVertices[i], edges);
+                String ID = String.valueOf(numVertices[i]) +"." + String.valueOf(edges); 
+                g.writeFile(ID);
                 executeDijkstra(g);
 
                 textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ() + "\n");
