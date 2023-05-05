@@ -2,32 +2,24 @@
 // Random Edge Generation in Java
 import java.util.*;
 import java.io.*;
-import com.opencsv.*;
 
 public class GraphGenerator {
-    final int MIN = 5;
-    final int MAX = 20;
+
     Graph graph;
     ArrayList<String> edges;
     File output;
-    private int numEdges;
-    private int numVertices;
+    private final int numEdges;
+    private final int numVertices;
  
     // Creating the constructor
     public GraphGenerator(int numVertices, int numEdges)
     {
         this.numVertices = numVertices;
+        this.numEdges = numEdges;
         graph = new Graph();
         edges = new ArrayList<>();
         Random random = new Random();
         File output = null;       
-
-        // Generate random number of nodes
-        if (numEdges == -1)
-            this.numEdges = random.nextInt(computeMaxEdges(numVertices)) + 1;
-        else 
-            this.numEdges = numEdges;
-
 
         // List of nodes
         ArrayList<Vertex> nodeList = new ArrayList<>(numVertices);
@@ -57,22 +49,9 @@ public class GraphGenerator {
                 edgesGenerated++;
             }
         }
-            
-    
-}
-
-        
-    
-  
-    // Method to compute the maximum number of possible
-    // edges for a given number of vertices
-    static int computeMaxEdges(int numOfVertices)
-    {
-        // As it is an undirected graph
-        // So, for a given number of vertices V
-        // there can be at-most V*(V-1)/2 number of edges
-        return numOfVertices * ((numOfVertices - 1) / 2);
     }
+
+
 
     
     /**
@@ -83,8 +62,8 @@ public class GraphGenerator {
      * for an edge between them. Otherwise, we return true because there should be an edge 
      * connecting them in our graph. This function will be used when adding edges from our file input.
      *
-     * @param Vertex a Check if the vertex is already in the graph
-     * @param Vertex b Check if the edge is already in the graph
+     * @param a Check if the vertex is already in the graph
+     * @param b Check if the vertex is already in the graph
      *
      * @return True if the edge is valid, and false otherwise
      */
@@ -96,11 +75,8 @@ public class GraphGenerator {
             if (Objects.equals(edge.dest.name, b.name))
                 return false;
         }
-
         return true;
-
     }
-
     
     /**
      * The writeFile function takes the edges array and writes it to a file.
@@ -115,8 +91,8 @@ public class GraphGenerator {
             }
             fileWriter.close();
         } catch (Exception e) {
-            // TODO: handle exception
-        }       
+            throw new RuntimeException(e);
+        }
     }
 
     public int getNumEdges() {
