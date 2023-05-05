@@ -131,6 +131,7 @@ public class Graph
         int nodesSeen = 0;
         opcountV = 0;
         opcountE = 0;
+        opcountPQ = 0;
         while( !pq.isEmpty( ) && nodesSeen < vertexMap.size( ) )
         {
             opcountPQ += (int)(Math.log(pq.size()) / Math.log(2));
@@ -151,14 +152,14 @@ public class Graph
                 
                 if( cvw < 0 )
                     throw new GraphException( "Graph has negative edges" );
-                    
+                opcountE++;
                 if( w.dist > v.dist + cvw )
                 {
                     w.dist = v.dist +cvw;
                     w.prev = v;
                     pq.add( new Path( w, w.dist ) );
                     opcountPQ += (int)(Math.log(pq.size()) / Math.log(2));
-                    opcountE++;
+
                 }
             }
         }

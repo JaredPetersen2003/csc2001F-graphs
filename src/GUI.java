@@ -103,40 +103,41 @@ public class GUI {
     }
 
     void multiTestOnClick() throws IOException{
-        int numTests = Integer.parseInt(JOptionPane.showInputDialog(frame, "How many tests to run?","Number of tests", JOptionPane.INFORMATION_MESSAGE));
-
+        //int numTests = Integer.parseInt(JOptionPane.showInputDialog(frame, "How many tests to run?","Number of tests", JOptionPane.INFORMATION_MESSAGE));
+        int[] numEdges = {20, 35, 50, 65, 80};
+        int[] numVertices = {10, 20, 30, 40, 50};
         CSVWriter writer = new CSVWriter(new FileWriter("data/output.csv"));
-        String[] head = {"V", "E", "Vcount", "Ecount", "PQCount"};
+        String[] head = {"V", "E", "Vcount", "Ecount", "PQCount", "Operations"};
         writer.writeNext(head);
-        
-        for (int i = 0; i < numTests; i++) {
-            
-            GraphGenerator g = new GraphGenerator((i+ 1) * 10, (i+ 1) * 50);
-            g.writeFile(String.valueOf(i));
-            
-            BufferedReader br1;
-            String startNode = "";
-            try {
-                br1 = new BufferedReader(new FileReader(g.output));
-                startNode = br1.readLine().split(" ")[0];
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            g.graph.dijkstra(startNode);
+        GraphGenerator g;
 
-            textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ()+ "\n");
-            String[] testResult = {String.valueOf(g.getNumVertices()), String.valueOf(g.getNumEdges()), String.valueOf( g.graph.getNodesSeen()), 
-                String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ())};
+        for (int i = 0; i < numVertices.length; i++) {
+            for (int j = 0; j < numEdges.length; j++) {
+                g = new GraphGenerator(numVertices[i], numEdges[j]);
+                g.writeFile(String.valueOf(i));
+
+                BufferedReader br1;
+                String startNode = "";
+                try {
+                    br1 = new BufferedReader(new FileReader(g.output));
+                    startNode = br1.readLine().split(" ")[0];
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                g.graph.dijkstra(startNode);
+
+                textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ()+ "\n");
+                int totalOperations = g.graph.getNodesSeen() + g.graph.getopcountE() + g.graph.getOpcountPQ();
+                String[] testResult = {String.valueOf(g.getNumVertices()), String.valueOf(g.getNumEdges()), String.valueOf( g.graph.getNodesSeen()),
+                        String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ()), String.valueOf(totalOperations)};
                 System.out.println(testResult[1]);
-            //Writing data to the csv file
-            writer.writeNext(testResult);
-    
-    
-    
+                //Writing data to the csv file
+                writer.writeNext(testResult);
+            }
         }
         //Flushing data from writer to file
         writer.flush();

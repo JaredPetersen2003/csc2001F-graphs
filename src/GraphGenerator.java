@@ -89,11 +89,11 @@ public class GraphGenerator {
      * @return True if the edge is valid, and false otherwise
      */
     Boolean checkValidEdge(Vertex a, Vertex b){
-        if (a.name == b.name)
+        if (Objects.equals(a.name, b.name))
             return false;
 
         for (Edge edge : graph.getVertex(a.name).adj) {
-            if (edge.dest.name ==  b.name)
+            if (Objects.equals(edge.dest.name, b.name))
                 return false;
         }
 
