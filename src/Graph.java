@@ -148,6 +148,7 @@ public class Graph
                 
                 if( cvw < 0 )
                     throw new GraphException( "Graph has negative edges" );
+
                 opcountE++;
                 if( w.dist > v.dist + cvw )
                 {

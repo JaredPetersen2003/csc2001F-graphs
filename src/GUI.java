@@ -10,7 +10,7 @@ public class GUI {
     JTextArea textArea;
     JButton singleTest;
     JButton multiTest;
-    private final int[] numEdges = {20, 35, 50, 65, 80};
+    private final int[] numEdges = {20, 35, 50, 65, 80, 95};
     private final int[] numVertices = {10, 20, 30, 40, 50};
     
     public GUI(){
@@ -67,21 +67,22 @@ public class GUI {
         //int numTests = Integer.parseInt(JOptionPane.showInputDialog(frame, "How many tests to run?","Number of tests", JOptionPane.INFORMATION_MESSAGE));
 
         CSVWriter writer = new CSVWriter(new FileWriter("data/output.csv"));
-        String[] head = {"V", "E", "Vcount", "Ecount", "PQCount", "Operations"};
+        String[] head = {"V", "E", "Vcount", "Ecount", "PQCount", "ElogV", "Operations"};
         writer.writeNext(head);
-        GraphGenerator g;
+
 
         for (int i = 0; i < numVertices.length; i++) {
-            for (int numEdge : numEdges) {
-                g = new GraphGenerator(numVertices[i], numEdge);
+            for (int j = 1; j < 5; j++) {
+                GraphGenerator g = new GraphGenerator(numVertices[i], j * 15);
                 g.writeFile(String.valueOf(i));
                 executeDijkstra(g);
 
                 textArea.append("Nodes seen: " + g.graph.getNodesSeen() + "\nEdges seen: " + g.graph.getopcountE() + "\nPQ operations:" + g.graph.getOpcountPQ() + "\n");
                 int totalOperations = g.graph.getNodesSeen() + g.graph.getopcountE() + g.graph.getOpcountPQ();
-
+                Double eLogV = g.getNumEdges() * (Math.log(g.getNumVertices()) / Math.log(2));
                 String[] testResult = {String.valueOf(g.getNumVertices()), String.valueOf(g.getNumEdges()), String.valueOf(g.graph.getNodesSeen()),
-                        String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ()), String.valueOf(totalOperations)};
+                        String.valueOf(g.graph.getopcountE()), String.valueOf(g.graph.getOpcountPQ()), eLogV.toString(), String.valueOf(totalOperations)};
+                //textArea.append(testResult.toString());
                 //Writing data to the csv file
                 writer.writeNext(testResult);
             }

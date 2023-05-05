@@ -16,6 +16,7 @@ public class GraphGenerator {
     {
         this.numVertices = numVertices;
         this.numEdges = numEdges;
+        int edgesGenerated = 0;
         graph = new Graph();
         edges = new ArrayList<>();
         Random random = new Random();
@@ -30,9 +31,30 @@ public class GraphGenerator {
             nodeList.add(new Vertex(nodeName));    
         }
 
-        int edgesGenerated = 0;
+        ArrayList<Vertex> nodeCopy = (ArrayList<Vertex>) nodeList.clone();
+        Collections.shuffle(nodeCopy);
+
+        for (int i = 0; i < nodeCopy.size() - 1; i++) {
+            Vertex vertexA = nodeCopy.get(i);
+            Vertex vertexB = nodeCopy.get(i + 1);
+
+            if (checkValidEdge(vertexA, vertexB)){
+                Double weight = (double)random.nextInt(10) + 1;
+
+                graph.addEdge(vertexA.name, vertexB.name, weight);
+                String edge = vertexA.name + " " + vertexB.name  + " " + weight;
+                edges.add(edge);
+                edgesGenerated++;
+                System.out.println(edgesGenerated);
+            }
+
+        }
+
+
+
         //Generate random edges
-        while ((edgesGenerated < this.numEdges) & (edgesGenerated < numVertices)) {
+        while (edgesGenerated < this.numEdges) {
+
             // Select two random vertices
             Vertex vertexA = graph.getVertex(nodeList.get(random.nextInt(numVertices)).name);
             Vertex vertexB = graph.getVertex(nodeList.get(random.nextInt(numVertices)).name);
@@ -47,6 +69,7 @@ public class GraphGenerator {
                 String edge = vertexA.name + " " + vertexB.name  + " " + weight; 
                 edges.add(edge);
                 edgesGenerated++;
+                System.out.println(edgesGenerated);
             }
         }
     }
@@ -68,6 +91,10 @@ public class GraphGenerator {
      * @return True if the edge is valid, and false otherwise
      */
     Boolean checkValidEdge(Vertex a, Vertex b){
+        int avgEdgeCount = numEdges / numVertices;
+        //if (a.adj.size() > avgEdgeCount || b.adj.size() > avgEdgeCount)
+         //   return false;
+
         if (Objects.equals(a.name, b.name))
             return false;
 
@@ -105,4 +132,4 @@ public class GraphGenerator {
 }
    
 
-	
+
